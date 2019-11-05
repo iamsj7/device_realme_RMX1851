@@ -1,0 +1,4 @@
+require version-baseband=4.0.2.c5-00056-SDM710_GEN_PACK-1.194050.1.194479.2
+require version-modem=2019-05-0422:29:17
+require version-trustzone=TZ.XF.5.0.2-00080
+require version-vendor=1556977682
