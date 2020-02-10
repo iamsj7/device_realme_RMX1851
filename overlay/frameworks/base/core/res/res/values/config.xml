@@ -31,7 +31,7 @@
      <bool name="config_automatic_brightness_available">false</bool>
 
     <!-- Boolean indicating if current platform supports HFP inband ringing -->
-     <bool name="config_bluetooth_hfp_inband_ringing_support">false</bool>
+     <bool name="config_bluetooth_hfp_inband_ringing_support">true</bool>
 
     <!-- Boolean indicating if current platform supports BLE peripheral mode -->
      <bool name="config_bluetooth_le_peripheral_mode_supported">false</bool>
@@ -83,7 +83,7 @@
          be picked. Anyone who wants to disable the overlay mechanism can set it
          to false.
     -->
-     <bool name="config_enableNetworkLocationOverlay">true</bool>
+     <bool name="config_enableNetworkLocationOverlay">false</bool>
 
     <!-- Whether WiFi display is supported by this device.
          There are many prerequisites for this feature to work correctly.
@@ -157,7 +157,7 @@
 
     <!-- Whether a software navigation bar should be shown. NOTE: in the future this may be
          autodetected from the Configuration. -->
-     <bool name="config_showNavigationBar">false</bool>
+     <bool name="config_showNavigationBar">true</bool>
 
     <!-- Flag indicating if the speed up audio on mt call code should be executed -->
      <bool name="config_speed_up_audio_on_mt_calls">false</bool>
@@ -239,7 +239,7 @@
      <bool name="skip_restoring_network_selection">false</bool>
 
     <!-- Height of the status bar -->
-     <dimen name="status_bar_height_portrait">24.0dip</dimen>
+     <dimen name="status_bar_height_portrait">32.0dip</dimen>
 
     <!-- The maximum range of gamma adjustment possible using the screen
          auto-brightness adjustment setting. -->
@@ -266,17 +266,17 @@
          when adapting to brighter or darker environments.  This parameter controls how quickly
          brightness changes occur in response to an observed change in light level that exceeds the
          hysteresis threshold. -->
-     <integer name="config_autoBrightnessBrighteningLightDebounce">4000</integer>
-     <integer name="config_autoBrightnessDarkeningLightDebounce">8000</integer>
+     <integer name="config_autoBrightnessBrighteningLightDebounce">1000</integer>
+     <integer name="config_autoBrightnessDarkeningLightDebounce">4000</integer>
 
     <!-- Operating volatage for bluetooth controller. 0 by default-->
-     <integer name="config_bluetooth_operating_voltage_mv">0</integer>
+     <integer name="config_bluetooth_operating_voltage_mv">3300</integer>
 
     <!-- Fast brightness animation ramp rate in brightness units per second-->
-     <integer name="config_brightness_ramp_rate_fast">180</integer>
+     <integer name="config_brightness_ramp_rate_fast">800</integer>
 
     <!-- Slow brightness animation ramp rate in brightness units per second-->
-     <integer name="config_brightness_ramp_rate_slow">60</integer>
+     <integer name="config_brightness_ramp_rate_slow">160</integer>
 
     <!--  Maximum number of supported users -->
      <integer name="config_multiuserMaximumUsers">1</integer>
@@ -300,20 +300,20 @@
     <!-- Screen brightness used to dim the screen when the user activity
          timeout expires.  May be less than the minimum allowed brightness setting
          that can be set by the user. -->
-     <integer name="config_screenBrightnessDim">10</integer>
+     <integer name="config_screenBrightnessDim">4</integer>
 
     <!-- Screen brightness used to dim the screen while dozing in a very low power state.
          May be less than the minimum allowed brightness setting
          that can be set by the user. -->
-     <integer name="config_screenBrightnessDoze">1</integer>
+     <integer name="config_screenBrightnessDoze">4</integer>
 
     <!-- Default screen brightness setting.
          Must be in the range specified by minimum and maximum. -->
-     <integer name="config_screenBrightnessSettingDefault">102</integer>
+     <integer name="config_screenBrightnessSettingDefault">186</integer>
 
     <!-- Minimum screen brightness setting allowed by the power manager.
          The user is forbidden from setting the brightness below this level. -->
-     <integer name="config_screenBrightnessSettingMinimum">10</integer>
+     <integer name="config_screenBrightnessSettingMinimum">4</integer>
 
     <!-- Shutdown if the battery temperature exceeds (this value * 0.1) Celsius. -->
      <integer name="config_shutdownBatteryTemperature">680</integer>
@@ -328,9 +328,54 @@
     <!-- Regex of wired ethernet ifaces -->
      <string name="config_ethernet_iface_regex">eth\\d</string>
 
+    <!-- The bounding path of the cutout region of the main built-in display.
+         Must either be empty if there is no cutout region, or a string that is parsable by
+         {@link android.util.PathParser}.
+    
+         The path is assumed to be specified in display coordinates with pixel units and in
+         the display's native orientation, with the origin of the coordinate system at the
+         center top of the display.
+    
+         To facilitate writing device-independent emulation overlays, the marker `@dp` can be
+         appended after the path string to interpret coordinates in dp instead of px units.
+         Note that a physical cutout should be configured in pixels for the best results.
+    -->
+     <string name="config_mainBuiltInDisplayCutout">M -70,0 L -70,76 L 70,76 L 70,0 Z</string>
+
     <!-- Configure wifi tcp buffersizes in the form:
          rmem_min,rmem_def,rmem_max,wmem_min,wmem_def,wmem_max -->
-     <string name="config_wifi_tcp_buffers">524288,1048576,2097152,262144,524288,1048576</string>
+     <string name="config_wifi_tcp_buffers">524288,1048576,4525824,524288,1048576,4525824</string>
+
+    <!-- Array of output values for LCD backlight corresponding to the LUX values
+         in the config_autoBrightnessLevels array.  This array should have size one greater
+         than the size of the config_autoBrightnessLevels array.
+         This must be overridden in platform specific overlays -->
+    <integer-array name="config_autoBrightnessLcdBacklightValues">
+        <item>8</item>
+        <item>22</item>
+        <item>48</item>
+        <item>78</item>
+        <item>128</item>
+        <item>206</item>
+        <item>255</item>
+    </integer-array>
+
+    <!-- Array of light sensor LUX values to define our levels for auto backlight brightness support.
+         The N entries of this array define N  1 zones as follows:
+         Zone 0:        0 <= LUX < array[0]
+         Zone 1:        array[0] <= LUX < array[1]
+         ...
+         Zone N:        array[N - 1] <= LUX < array[N]
+         Zone N + 1     array[N] <= LUX < infinity
+         Must be overridden in platform specific overlays -->
+    <integer-array name="config_autoBrightnessLevels">
+        <item>45</item>
+        <item>1025</item>
+        <item>1480</item>
+        <item>2250</item>
+        <item>3300</item>
+        <item>10000</item>
+    </integer-array>
 
     <!-- Vibrator pattern for a very short but reliable vibration for soft keyboard tap -->
     <integer-array name="config_keyboardTapVibePattern">
@@ -361,6 +406,19 @@
         <item>20</item>
         <item>30</item>
     </integer-array>
+
+    <!-- Values for GPS configuration -->
+    <string-array name="config_gpsParameters">
+        <item>SUPL_HOST=supl.google.com</item>
+        <item>SUPL_PORT=7275</item>
+        <item>SUPL_VER=0x20000</item>
+        <item>SUPL_MODE=1</item>
+        <item>SUPL_ES=0</item>
+        <item>LPP_PROFILE=0</item>
+        <item>USE_EMERGENCY_PDN_FOR_EMERGENCY_SUPL=1</item>
+        <item>A_GLONASS_POS_PROTOCOL_SELECT=0</item>
+        <item>GPS_LOCK=0</item>
+    </string-array>
 
     <!-- An Array of "[Connection name],[ConnectivityManager.TYPE_xxxx],
          [associated radio-type],[priority],[restoral-timer(ms)],[dependencyMet]  -->
